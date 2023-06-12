@@ -12,6 +12,7 @@ const MovieContainer = styled.div`
     }
 `
 
+
 const MovieInfo = styled.div`
     display: grid;
     grid-template-columns: repeat(4, minmax(300px, 1fr))
