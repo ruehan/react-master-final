@@ -1,5 +1,6 @@
 import ComingSoon from "../components/ComingSoon";
 
+
 function ComingSoonView(){
     return(
         <>

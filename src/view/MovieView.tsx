@@ -10,9 +10,7 @@ const MovieContainer = styled.div`
 function MovieView(){
     return(
         <>
-            <MovieContainer >
-                <Movie />
-            </MovieContainer>
+            <Movie />
         </>
     )
 }
