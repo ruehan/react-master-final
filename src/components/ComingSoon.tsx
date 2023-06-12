@@ -29,7 +29,6 @@ const Img = styled.img`
     border-radius: 15px;
 `
 
-
 function ComingSoon(){
 
     const { isLoading, isError, data, error } = useQuery("coming-soon", getComingSoon, {
