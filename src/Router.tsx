@@ -3,7 +3,7 @@ import Root from "./Root";
 import MovieView from "./view/MovieView";
 import ComingSoonView from "./view/ComingSoonView";
 import NowPlayingView from "./view/NowPlayingView";
-import Home from "./view/Home";
+
 
 const router = createBrowserRouter([
     {
