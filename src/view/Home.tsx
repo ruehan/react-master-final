@@ -17,6 +17,7 @@ const Tab = styled.li`
     color: white;
 `
 
+
 function Home(){
 
     return (
