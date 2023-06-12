@@ -29,6 +29,7 @@ const Img = styled.img`
     border-radius: 15px;
 `
 
+
 function Movie(){
 
     const { isLoading, isError, data, error } = useQuery("popular", getPopular, {
