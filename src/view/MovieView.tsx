@@ -7,6 +7,7 @@ const MovieContainer = styled.div`
     /* grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
 `
 
+
 function MovieView(){
     return(
         <>
