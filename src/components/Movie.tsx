@@ -1,7 +1,12 @@
 import { useQuery } from "react-query";
-import { getPopular, makeImagePath } from "../api/api";
+import { getComingSoon, getNowPlaying, getPopular, makeImagePath } from "../api/api";
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import { movieState, tabState } from "../atoms/atoms";
+import { useRecoilState } from "recoil";
+import { Link, useMatch } from "react-router-dom";
+import { useState } from "react";
+import MovieDetailView from "../view/MovieDetailView";
 
 
 const MovieContainer = styled.div`
@@ -24,7 +29,7 @@ const MovieData = styled(motion.div)`
     margin-bottom: 100px;
 `
 
-const Img = styled.img`
+const Img = styled(motion.img)`
     width: 200px;
     height: auto;
     border-radius: 15px;
@@ -50,10 +55,35 @@ const item = {
     }
 }
 
+const img = {
+    whileHover: {
+        scale: 1.1,
+        y: -50
+    }
+}
 
 function Movie(){
 
-    const { isLoading, isError, data, error } = useQuery("popular", getPopular, {
+    const [tab, setTab] = useRecoilState(tabState)
+    const [movieId, setMovieId] = useRecoilState(movieState)
+    const [openModal, setOpenModal] = useState(false)
+
+    const addr = window.location.href
+
+    /* const movieMatch = useMatch("/movie/:id")
+
+    console.log(movieMatch) */
+
+
+    const onClick = (event) => {
+        setMovieId(event.target.id)
+        setOpenModal(prev => !prev)
+    }
+
+    //popular, coming-soon, now-playing
+
+    const { isLoading, isError, data, error } = useQuery(tab === 'Popular' ? 'popular' : tab === 'Coming Soon' ? 'coming-soon' : 'now-playing', 
+    tab === 'Popular' ? getPopular : tab === 'Coming Soon' ? getComingSoon : getNowPlaying, {
         refetchOnWindowFocus: false,
         retry: 0,
         onSuccess: data => {
@@ -64,6 +94,7 @@ function Movie(){
         }
     })
 
+    
     if (isLoading) return <div>Loading...</div>
 
     if (isError) return <div>{error.message}</div>
@@ -77,8 +108,15 @@ function Movie(){
                 {data.results.map((movie: any) => (
                 
                     <MovieData 
+                        key={movie.name}
                         variants={item}>
-                        <div><Img src={makeImagePath(movie.poster_path)}></Img></div>
+                        <div>
+                        <Img id={movie.id} onClick={onClick} src={makeImagePath(movie.poster_path)} variants={img} whileHover='whileHover'></Img>
+                                {openModal ? (
+                                    <MovieDetailView />
+                                ) : null}
+                            
+                        </div>
                         <div key={movie.id}>{movie.title}</div> 
                     </MovieData>
                 
