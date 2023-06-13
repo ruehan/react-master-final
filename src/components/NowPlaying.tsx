@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import { getNowPlaying, makeImagePath } from "../api/api";
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
 
 const MovieContainer = styled.div`
@@ -13,12 +14,12 @@ const MovieContainer = styled.div`
 `
 
 
-const MovieInfo = styled.div`
+const MovieInfo = styled(motion.div)`
     display: grid;
-    grid-template-columns: repeat(4, minmax(300px, 1fr))
+    grid-template-columns: repeat(3, minmax(300px, 1fr))
 `
 
-const MovieData = styled.div`
+const MovieData = styled(motion.div)`
     display: grid;
     grid-template-rows: 310px 20px;
     margin-bottom: 100px;
@@ -30,6 +31,25 @@ const Img = styled.img`
     border-radius: 15px;
 `
 
+const container = {
+    hidden: { opacity: 1, scale: 0 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+        }
+    }
+}
+
+const item = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1
+    }
+}
 function NowPlaying(){
 
     const { isLoading, isError, data, error } = useQuery("now-playing", getNowPlaying, {
@@ -49,10 +69,14 @@ function NowPlaying(){
 
     return(
         <MovieContainer>
-            <MovieInfo>
+            <MovieInfo 
+                variants={container}
+                initial="hidden"
+                animate="visible">
                 {data.results.map((movie: any) => (
                 
-                    <MovieData>
+                    <MovieData 
+                        variants={item}>
                         <div><Img src={makeImagePath(movie.poster_path)}></Img></div>
                         <div key={movie.id}>{movie.title}</div> 
                     </MovieData>
