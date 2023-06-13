@@ -3,6 +3,7 @@ import Root from "./Root";
 import MovieView from "./view/MovieView";
 import ComingSoonView from "./view/ComingSoonView";
 import NowPlayingView from "./view/NowPlayingView";
+import MovieDetailView from "./view/MovieDetailView";
 
 
 const router = createBrowserRouter([
@@ -16,11 +17,15 @@ const router = createBrowserRouter([
             },
             {
                 path: "coming-soon",
-                element: <ComingSoonView />,
+                element: <MovieView />,
             },
             {
                 path: "now-playing",
-                element: <NowPlayingView />,
+                element: <MovieView />,
+            },
+            {
+                path: "movie/:id",
+                element: <MovieDetailView />
             }
         ]
     }
