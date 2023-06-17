@@ -13,6 +13,7 @@ export function getComingSoon() {
 }
 
 export function getMovie(id: string) {
+  console.log(id)
   return fetch(`${BASE_URL}/movie?id=${id}`).then((r) => r.json());
 }
 

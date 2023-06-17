@@ -1,8 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Root from "./Root";
 import MovieView from "./view/MovieView";
-import ComingSoonView from "./view/ComingSoonView";
-import NowPlayingView from "./view/NowPlayingView";
 import MovieDetailView from "./view/MovieDetailView";
 
 
