@@ -2,17 +2,15 @@ import { useQuery } from "react-query";
 import { getComingSoon, getNowPlaying, getPopular, makeImagePath } from "../api/api";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { movieState, tabState } from "../atoms/atoms";
+import { modalState, movieState, tabState } from "../atoms/atoms";
 import { useRecoilState } from "recoil";
-import { Link, useMatch } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MovieDetailView from "../view/MovieDetailView";
 
 
 const MovieContainer = styled.div`
     color: white;
     
-
     div {
         text-align: center;
     }
@@ -66,64 +64,62 @@ function Movie(){
 
     const [tab, setTab] = useRecoilState(tabState)
     const [movieId, setMovieId] = useRecoilState(movieState)
-    const [openModal, setOpenModal] = useState(false)
+    const [openModal, setOpenModal] = useRecoilState(modalState)
 
     const addr = window.location.href
-
-    /* const movieMatch = useMatch("/movie/:id")
-
-    console.log(movieMatch) */
 
 
     const onClick = (event) => {
         setMovieId(event.target.id)
         setOpenModal(prev => !prev)
+        console.log("Modal OnCLick")
     }
 
     //popular, coming-soon, now-playing
 
-    const { isLoading, isError, data, error } = useQuery(tab === 'Popular' ? 'popular' : tab === 'Coming Soon' ? 'coming-soon' : 'now-playing', 
+    const { isLoading, isError, data, error} = useQuery(tab === 'Popular' ? 'popular' : tab === 'Coming Soon' ? 'coming-soon' : 'now-playing', 
     tab === 'Popular' ? getPopular : tab === 'Coming Soon' ? getComingSoon : getNowPlaying, {
         refetchOnWindowFocus: false,
         retry: 0,
         onSuccess: data => {
             console.log(data.results)
         },
-        onError: e => {
+        onError: e => { 
             console.log(e.message)
         }
     })
 
-    
-    if (isLoading) return <div>Loading...</div>
+    if (isLoading) return null
 
     if (isError) return <div>{error.message}</div>
 
     return(
-        <MovieContainer>
-            <MovieInfo 
-                variants={container}
-                initial="hidden"
-                animate="visible">
-                {data.results.map((movie: any) => (
-                
-                    <MovieData 
-                        key={movie.name}
-                        variants={item}>
-                        <div>
-                        <Img id={movie.id} onClick={onClick} src={makeImagePath(movie.poster_path)} variants={img} whileHover='whileHover'></Img>
-                                {openModal ? (
-                                    <MovieDetailView />
-                                ) : null}
+        <>
+            <MovieContainer>
+                <MovieInfo 
+                    key={tab}
+                    variants={container}
+                    initial="hidden"
+                    animate="visible">
+                    {data.results.map((movie: any) => (
+                    
+                        <MovieData 
+                            key={movie.name}
+                            variants={item}>
+                            <div>
+                            <Img key={movie.id} id={movie.id} onClick={onClick} src={makeImagePath(movie.poster_path)} variants={img} whileHover='whileHover'></Img>
+                                    
+                            </div>
+                            {openModal ? (
+                                        <MovieDetailView />
+                                    ) : null}
                             
-                        </div>
-                        <div key={movie.id}>{movie.title}</div> 
-                    </MovieData>
-                
-                ))}
-            </MovieInfo>
-            
-        </MovieContainer>
+                            <div key={movie.title}>{movie.title}</div> 
+                        </MovieData>
+                    ))}
+                </MovieInfo>
+            </MovieContainer>
+        </>
     )
 }
 
