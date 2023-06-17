@@ -3,6 +3,7 @@ import { ThemeProvider, createGlobalStyle } from "styled-components";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import Home from "./view/Home";
+import { useMediaQuery } from "react-responsive";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -62,12 +63,24 @@ const GlobalStyle = createGlobalStyle`
 `
 function Root() {
 
+  // const isDesktopOrLaptop = useMediaQuery(
+  //     { maxWidth: 3000 },
+
+  // )
+
+  const isDesktopOrLaptop = useMediaQuery({
+    query : "(max-width:1200px)"
+  });
+
   return (
-    <>
-      <GlobalStyle />
-      {/* <Outlet /> */}
-      <Home />
-    </>
+    isDesktopOrLaptop ? (
+      <>
+        <GlobalStyle />
+        <Home />
+      </>
+    ) : (
+      <div>화면 크기를 줄여주세요</div>
+    )
   );
 }
 
