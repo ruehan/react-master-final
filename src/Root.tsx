@@ -60,27 +60,24 @@ const GlobalStyle = createGlobalStyle`
     border-spacing: 0;
   }
 
-`
+`;
 function Root() {
-
   // const isDesktopOrLaptop = useMediaQuery(
   //     { maxWidth: 3000 },
 
   // )
 
   const isDesktopOrLaptop = useMediaQuery({
-    query : "(max-width:1200px)"
+    query: "(max-width:900px)",
   });
 
-  return (
-    isDesktopOrLaptop ? (
-      <>
-        <GlobalStyle />
-        <Home />
-      </>
-    ) : (
-      <div>화면 크기를 줄여주세요</div>
-    )
+  return isDesktopOrLaptop ? (
+    <>
+      <GlobalStyle />
+      <Home />
+    </>
+  ) : (
+    <div>화면 크기를 줄여주세요</div>
   );
 }
 
