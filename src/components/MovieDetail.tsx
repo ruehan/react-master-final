@@ -4,9 +4,7 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { modalState, movieState, tabState } from "../atoms/atoms";
 import { useRecoilState } from "recoil";
-import { useMatch, useParams } from "react-router-dom";
-import ModalContainer from "./modal/ModalContainer";
-import { useEffect, useState } from "react";
+
 
 
 const Img = styled(motion.img)`
@@ -26,6 +24,7 @@ const Container = styled(motion.div)`
     overflow: scroll;
     border-radius: 15px;
     z-index: 5;
+    overflow: hidden;
 
     ::-webkit-scrollbar {
         display: none;
@@ -115,7 +114,7 @@ function MovieDetail(){
                     </BackBtn>
                     <DetailLI key={data.backdrop_path}><Img src={makeBgPath(data.backdrop_path)}></Img></DetailLI>
                     <DetailLI key={data.original_title}><Title>{data.original_title}</Title></DetailLI>
-                    <DetailLI key={data.id}>{data.overview}</DetailLI>
+                    <DetailLI key={data.id}>{data.overview.substr(0, 150)}...</DetailLI>
                     <DetailLI key={data.release_date}>Release Data : {data.release_date}</DetailLI>
                     <Genres>
                         Genre : 
