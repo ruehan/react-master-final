@@ -2,14 +2,15 @@ import { useQuery } from "react-query";
 import { getComingSoon, getMovie, getNowPlaying, getPopular, makeBgPath, makeImagePath } from "../api/api";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { movieState, tabState } from "../atoms/atoms";
+import { modalState, movieState, tabState } from "../atoms/atoms";
 import { useRecoilState } from "recoil";
 import { useMatch, useParams } from "react-router-dom";
 import ModalContainer from "./modal/ModalContainer";
+import { useEffect, useState } from "react";
 
 
 const Img = styled(motion.img)`
-    width: 80%;
+    width: 100%;
     height: auto;
     border-radius: 15px;
     opacity: 0.2;
@@ -24,6 +25,7 @@ const Container = styled(motion.div)`
     top: 10%;
     overflow: scroll;
     border-radius: 15px;
+    z-index: 5;
 
     ::-webkit-scrollbar {
         display: none;
@@ -31,43 +33,67 @@ const Container = styled(motion.div)`
     
 `
 
-const CollectionImg = styled(motion.img)`
-    width: 200px;
-    height: auto;
-    border-radius: 15px;
-`
-
 const DetailUL = styled.ul`
     width: 100%;
     height: auto;
-    z-index: 100;
+    position: relative;
+    text-align: left;
 `
 
 const DetailLI = styled.li`
     color: white;
+    margin: 20px;
 `
 
 const Title = styled.h1`
     font-size: 40px;
 `
 
+const BackBtn = styled.button`
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    z-index: 10;
+    /* background-color: rgba(0, 0, 0, .1); */
+    border: none;
+    /* color: rgba(255, 255, 255, 0); */
+`
+
+const Genres = styled.div`
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(6, minmax(100px, 200px));
+    /* justify-self: start; */
+    align-items: center;
+    /* text-align: left; */
+`
+
 function MovieDetail(){
 
     const [movieId, setMovieId] = useRecoilState(movieState)
-
+    const [openModal, setOpenModal] = useRecoilState(modalState)
+    
+    const onClick = () => {
+        setOpenModal(prev => !prev)
+        console.log("Modal OnCLick")
+    }
 
     const { isLoading, isError, data, error } = useQuery(['id', movieId], ({ queryKey }) => getMovie(queryKey[1]), {
         refetchOnWindowFocus: false,
         retry: false,
         onSuccess: data => {
-            // console.log(data)
+            console.log(data)
+            console.log("Movie Detail Page Load")
         },
         onError: e => {
             console.log(e.message)
         }
     })
 
-    if (isLoading) return <div>Loading...</div>
+    if (isLoading) return null
 
     if (isError) return <div>{error.message}</div>
 
@@ -79,23 +105,25 @@ function MovieDetail(){
                     transition={{
                         type: "spring",
                         duration: 1
-
                     }}>
-                <DetailUL>
-                    <DetailLI><Img src={makeBgPath(data.backdrop_path)}></Img></DetailLI>
-                    <DetailLI><Title>{data.original_title}</Title></DetailLI>
-                    <DetailLI>{data.release_date}</DetailLI>
-                    <div>
+                <DetailUL >
+                    <BackBtn onClick={onClick}>
+                        <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z">
+                            </path>
+                        </svg>
+                    </BackBtn>
+                    <DetailLI key={data.backdrop_path}><Img src={makeBgPath(data.backdrop_path)}></Img></DetailLI>
+                    <DetailLI key={data.original_title}><Title>{data.original_title}</Title></DetailLI>
+                    <DetailLI key={data.id}>{data.overview}</DetailLI>
+                    <DetailLI key={data.release_date}>Release Data : {data.release_date}</DetailLI>
+                    <Genres>
+                        Genre : 
                         {data.genres.map((genre: any) => (
-                            <DetailLI>{genre.name}</DetailLI>
+                            <DetailLI key={genre.name}>{genre.name}  </DetailLI>
                         ))}        
-                    </div>      
-                    {data.belongs_to_collection !== null ? (
-                        <>
-                            <DetailLI>{data.belongs_to_collection.name}</DetailLI>      
-                            <CollectionImg src={makeImagePath(data.belongs_to_collection.poster_path)}></CollectionImg>
-                        </>
-                    ) : null}
+                    </Genres>      
+                    <DetailLI>Runtime : {data.runtime}</DetailLI>
                 </DetailUL>
                 </Container>
 
@@ -105,6 +133,3 @@ function MovieDetail(){
 
 export default MovieDetail;
 
-function useRouteMatch(arg0: string) {
-    throw new Error("Function not implemented.");
-}
